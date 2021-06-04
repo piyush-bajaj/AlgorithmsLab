@@ -57,7 +57,7 @@ function onMapClick(e) {
         .setLatLng(e.latlng)
         .setContent(
             `<div>
-            <div>You clicked at ${e.latlng.toString()}</div>
+            <div>You clicked at ${e.latlng.wrap().toString()}</div>
             ${loadButtons(e)}
         </div>`);
     mymap.openPopup(selectionPopup);
