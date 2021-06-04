@@ -6,7 +6,7 @@ docker could be present on the machine or an online lab can also be used. eg htt
 
 
 Instructions for execution:
-Checkout the repository on the system.
+Checkout the repository on the system (branch --> master).
 
 Open the Grid Generation folder and run the provided jar file with the following command:
     java -jar Navigation.jar <pbf_file_name.pbf> <grid_rows(lat_lines)> <grid_columns(lng_lines)>
