@@ -36,8 +36,8 @@ function reset() {
 function loadButtons(e) {
     var buttonHTML = ``;
     if (!sourceChosen || !destinationChosen) {
-        buttonHTML = buttonHTML + `\n<input type="button" class="btn" onclick="setPoint('s', ${e.latlng.lat} , ${e.latlng.lng})" value="Select as Source point"/>`;
-        buttonHTML = buttonHTML + `\n<input type="button" class="btn" onclick="setPoint('d', ${e.latlng.lat} , ${e.latlng.lng})" value="Select as Destination point"/>`;
+        buttonHTML = buttonHTML + `\n<input type="button" class="btn" onclick="setPoint('s', ${e.latlng.wrap().lat} , ${e.latlng.wrap().lng})" value="Select as Source point"/>`;
+        buttonHTML = buttonHTML + `\n<input type="button" class="btn" onclick="setPoint('d', ${e.latlng.wrap().lat} , ${e.latlng.wrap().lng})" value="Select as Destination point"/>`;
         buttonHTML = buttonHTML + `\n<input type="button" class="btn" onclick="reset()" value="Reset Data"/>`;
     }
     else if(!destinationChosen) {
@@ -71,6 +71,8 @@ function setPoint(point, lat, lng) {
         srcLat = lat;
         srcLng = lng;
         sourceChosen = true;
+        if(fromMarker)
+            mymap.removeLayer(fromMarker);
         fromMarker = L.marker([lat, lng]).bindPopup("Starting point").addTo(mymap);
     }
     else if (point === 'd') {
@@ -78,6 +80,8 @@ function setPoint(point, lat, lng) {
         destLat = lat;
         destLng = lng;
         destinationChosen = true;
+        if(toMarker)
+            mymap.removeLayer(toMarker);
         toMarker = L.marker([lat, lng]).bindPopup("Destination point").addTo(mymap);
     }
     mymap.closePopup();
