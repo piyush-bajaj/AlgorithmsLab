@@ -1,0 +1,15 @@
+{
+  "name": "ship_navigation_ui",
+  "version": "1.0.0",
+  "description": "Node.js on Docker to host UI files",
+  "author": "Piyush Bajaj <piyush.bajaj.1995@gmail.com>",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "cors": "latest",
+    "express": "^4.16.1"
+  }
+}
