@@ -27,6 +27,7 @@ public class Navigation {
 	static List<Node> nodes = new ArrayList<Node>();
 	static List<Edge> edges = new ArrayList<Edge>();
 	DijkstraPriority dijkstraPriority = null;
+	private static int gridDimension[] = {180, 360};
 
 	@CrossOrigin
 	@GetMapping("/init")
@@ -55,6 +56,11 @@ public class Navigation {
 			}
 			
 			s.close();
+
+			//read the dimensions of the grid
+			s = new Scanner(new File("GridDimensions.txt"));
+			gridDimension[0] = Integer.parseInt(s.nextLine());
+			gridDimension[1] = Integer.parseInt(s.nextLine());
 
 			Graph g = new Graph(nodes, edges);
 
@@ -86,7 +92,6 @@ public class Navigation {
 
 		if (srcNode != null && destNode != null) {
 			dist = dijkstraPriority.dist(srcNode, destNode);
-			// dijkstraPriority.printPath(destNode);
 			List<Node> way = dijkstraPriority.getPath(destNode);
 			points = new double[way.size()][2];
 			way.stream().map(node -> { 
@@ -108,8 +113,8 @@ public class Navigation {
 
 	private static Node setupSource(double lat, double lng) {
 
-		double d_phi = new BigDecimal(180.0 / 200).setScale(7, RoundingMode.HALF_UP).doubleValue(); // change in lat
-		double d_lambda = new BigDecimal(360.0 / 500).setScale(7, RoundingMode.HALF_UP).doubleValue(); // change in lng
+		double d_phi = new BigDecimal(180.0 / gridDimension[0]).setScale(7, RoundingMode.HALF_UP).doubleValue(); // change in lat
+		double d_lambda = new BigDecimal(360.0 / gridDimension[1]).setScale(7, RoundingMode.HALF_UP).doubleValue(); // change in lng
 
 		int mSource = (int) Math.round(Math.abs(lat - 90.0) / d_phi); // getting closest lat in grid
 		int nSource = (int) Math.round(Math.abs(lng - 180.0) / d_lambda);// getting closest lng in grid
@@ -134,14 +139,14 @@ public class Navigation {
 
 	private static Node setupDestination(double lat, double lng) {
 
-		double d_phi = new BigDecimal(180.0 / 200).setScale(7, RoundingMode.HALF_UP).doubleValue(); // change in lat
-		double d_lambda = new BigDecimal(360.0 / 500).setScale(7, RoundingMode.HALF_UP).doubleValue(); // change in lng
+		double d_phi = new BigDecimal(180.0 / gridDimension[0]).setScale(7, RoundingMode.HALF_UP).doubleValue(); // change in lat
+		double d_lambda = new BigDecimal(360.0 / gridDimension[1]).setScale(7, RoundingMode.HALF_UP).doubleValue(); // change in lng
 
 		int mDest = (int) Math.round(Math.abs(lat - 90.0) / d_phi); // getting closest lat in grid
 		int nDest = (int) Math.round(Math.abs(lng - 180.0) / d_lambda);// getting closest lng in grid
 
-		lat = 90 - (mDest * d_phi); // source lat to search in graph in the range -90 to 90
-		lng = 180 - (nDest * d_lambda); // source lng to search in graph in range -180 to 180
+		lat = new BigDecimal(90 - (mDest * d_phi)).setScale(7, RoundingMode.HALF_UP).doubleValue(); // source lat to search in graph in the range -90 to 90
+		lng = new BigDecimal(180 - (nDest * d_lambda)).setScale(7, RoundingMode.HALF_UP).doubleValue(); // source lng to search in graph in range -180 to 180
 
 		int idx = nodes.indexOf(new Node(0, lat, lng));
 

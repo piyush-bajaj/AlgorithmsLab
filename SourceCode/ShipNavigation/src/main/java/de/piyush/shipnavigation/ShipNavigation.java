@@ -9,6 +9,7 @@ import de.piyush.shipnavigation.osmartifacts.DataLoader;
 import de.piyush.shipnavigation.osmartifacts.OSMDataSet;
 import de.topobyte.osm4j.core.access.OsmReader;
 import de.topobyte.osm4j.pbf.seq.PbfReader;
+import de.piyush.shipnavigation.geojson.GeoJson;
 
 import java.io.*;
 import java.util.List;
@@ -38,7 +39,7 @@ public class ShipNavigation {
             grid.createSimpleGrid(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
 
             System.out.println("Starting storage to file: " + new java.util.Date());
-            saveNodesAndEdgesToFile(grid);
+            saveNodesAndEdgesToFile(grid, args[1], args[2]);
             System.out.println("Storage done: " + new java.util.Date());
 
         } catch (IOException e) {
@@ -48,7 +49,7 @@ public class ShipNavigation {
 
     }
 
-    private static void saveNodesAndEdgesToFile(Grid grid) {
+    private static void saveNodesAndEdgesToFile(Grid grid, String m, String n) {
         BufferedWriter output = null;
         try {
             output = new BufferedWriter(new FileWriter("NodesEdges.txt"));
@@ -64,6 +65,13 @@ public class ShipNavigation {
                 output.write(edge.toString());
             }
             output.close();
+
+            output = new BufferedWriter(new FileWriter("GridDimensions.txt"));
+            output.write(m);
+            output.newLine();
+            output.write(n);
+            output.close();
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
