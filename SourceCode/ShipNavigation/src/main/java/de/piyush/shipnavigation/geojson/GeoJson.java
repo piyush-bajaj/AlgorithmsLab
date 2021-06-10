@@ -122,6 +122,9 @@ public class GeoJson {
                     properties.put(key, tags.get(key));
                 }
 
+                Coastline cway = (Coastline) way;
+                properties.put("bounding-box", cway.getBoundingBox());
+
                 //geojson writer utility
                 GeoJSONWriter writer = new GeoJSONWriter();
                 org.wololo.geojson.Geometry g = writer.write(polygon);

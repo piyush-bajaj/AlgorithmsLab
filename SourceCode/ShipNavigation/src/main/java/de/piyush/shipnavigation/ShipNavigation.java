@@ -34,6 +34,8 @@ public class ShipNavigation {
             System.out.println("Creating coastlines: " + new java.util.Date());
             List<Coastline> coastlines = new CoastlinesHelper().createCoastlines(selectedData);
 
+            new GeoJson().createGeoJson(coastlines, selectedData, "output");
+
             Grid grid = new Grid(coastlines, selectedData);
             System.out.println("Creating Grid: " + new java.util.Date());
             grid.createSimpleGrid(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
