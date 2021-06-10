@@ -60,8 +60,8 @@ public class Grid {
                 double y = 6_371 * Math.sin(polar) * Math.sin(azimuth);
                 double z = 6_371 * Math.cos(polar);
 
-                double lat = Constants.toOSMDegrees(Constants.toDegrees(Math.atan2(z, Math.sqrt(x * x + y * y))));
-                double lng = Constants.toOSMDegrees(Constants.toDegrees(Math.atan2(y, x)));
+                double lat = Constants.toDegrees(Math.atan2(z, Math.sqrt(x * x + y * y)));
+                double lng = Constants.toDegrees(Math.atan2(y, x));
 
                 Node currNode = new Node(dNodeId, lat, lng);
 
@@ -91,7 +91,7 @@ public class Grid {
                         double l_x = 6_371 * Math.sin(polar) * Math.cos(l_phi);
                         double l_y = 6_371 * Math.sin(polar) * Math.sin(l_phi);
 
-                        double l_lng = Constants.toOSMDegrees(Constants.toDegrees(Math.atan2(l_y, l_x)));
+                        double l_lng = Constants.toDegrees(Math.atan2(l_y, l_x));
 
                         if (pip.checkPoint(lat, l_lng, coastlines, data) == 0) {
                             Node l_node = new Node((int) (mAzimuth - 1), lat, l_lng);
@@ -133,12 +133,12 @@ public class Grid {
         Arrays.fill(topIdx, -1);
         boolean leftIdx = false;
         
-        double lat = Constants.toOSMDegrees(90.0);
-        double d_phi = new BigDecimal(Constants.toOSMDegrees(180.0) / m).setScale(7, RoundingMode.HALF_UP).doubleValue();
-        double d_lambda = new BigDecimal(Constants.toOSMDegrees(360.0) / n).setScale(7, RoundingMode.HALF_UP).doubleValue();
+        double lat = 90.0;
+        double d_phi = new BigDecimal(180.0 / m).setScale(7, RoundingMode.HALF_UP).doubleValue();
+        double d_lambda = new BigDecimal(360.0 / n).setScale(7, RoundingMode.HALF_UP).doubleValue();
         int dNodeId = 0, dEdgeId = 0;
         while (lat > -90.0) {
-            double lng = Constants.toOSMDegrees(-180.0);
+            double lng = -180.0;
             int j=0;
             
             while (lng < 180.0) {
@@ -150,7 +150,6 @@ public class Grid {
 
                     if(lng != -180.0) {
                         //check if left node is in water, if yes, get the node and create edges
-                        // if (pip.checkPoint(left.getLat(), left.getLng(), coastlines, data) == 0) {
                         if(leftIdx == true) {
                             Node leftNode = nodes.get(nodes.size() - 1);
                             int distance = haversine_distance(leftNode, currNode);
@@ -161,8 +160,6 @@ public class Grid {
                     else if( new BigDecimal(lng + d_lambda).setScale(7, RoundingMode.HALF_UP).doubleValue() >= 180.0) {
                     	//check the right node for the last node on latitude
                     	Point right = new Point(lat, lng - d_lambda);
-//                    	if (pip.checkPoint(right.getLat(), right.getLng(), coastlines, data) == 0) {
-                    	//alternate check thus saving some calculation
                     	if(topIdx[0] != -1) {
                             Node rightNode = nodes.get(topIdx[0]);
                             int distance = haversine_distance(rightNode, currNode);

@@ -14,6 +14,9 @@ import de.topobyte.osm4j.core.model.util.OsmModelUtil;
 import java.io.IOException;
 import java.util.Map;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class DataLoader {
 
     public OSMDataSet read(OsmReader reader) {
@@ -33,7 +36,7 @@ public class DataLoader {
             @Override
             public void handle(OsmNode node) throws IOException {
                 super.handle(node);
-                node = new Node(node.getId(), node.getLongitude(), node.getLatitude());
+                node = new Node(node.getId(), new BigDecimal(node.getLongitude()).setScale(7, RoundingMode.HALF_UP).doubleValue(), new BigDecimal(node.getLatitude()).setScale(7, RoundingMode.HALF_UP).doubleValue());
                 nodes.put(node.getId(), node);
             }
 

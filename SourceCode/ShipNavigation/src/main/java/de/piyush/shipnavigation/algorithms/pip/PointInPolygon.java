@@ -35,8 +35,6 @@ public class PointInPolygon {
     private int checkPointForCoastline(double latP, double lngP, Coastline coastline, OSMDataSet data) throws EntityNotFoundException {
         int location = 0, count = 0;
         int numNodes = coastline.getNumberOfNodes();
-        latP = Constants.toOSMDegrees(latP);
-        lngP = Constants.toOSMDegrees(lngP);
 
         //Consider Antarctica Points  on land
         if(latP < -85.1) {
@@ -52,9 +50,9 @@ public class PointInPolygon {
                 long nodeId = coastline.getNodeId(i);
                 OsmNode node = data.getNode(nodeId);
 
-                if(Constants.toOSMDegrees(node.getLatitude()) == latP && Constants.toOSMDegrees(node.getLongitude()) == lngP) {
+                if(node.getLatitude() == latP && node.getLongitude() == lngP) {
                     location = 2;
-//                    System.out.println("Point is on vertex");
+                    //System.out.println("Point is on vertex");
                     return location;
                 }
             }
@@ -72,31 +70,31 @@ public class PointInPolygon {
                         }
                         else {
                             //calculation of latitude based on lat long lines as straight lines
-//                            double lat = node1.getLatitude() + ((lngP - node.getLongitude())/(node1.getLongitude() - node.getLongitude())) * (node1.getLatitude() - node.getLatitude());
+                            //double lat = node1.getLatitude() + ((lngP - node.getLongitude())/(node1.getLongitude() - node.getLongitude())) * (node1.getLatitude() - node.getLatitude());
                             //calculation of latitude based on great circle arc lines as straight lines
                             double lat = Constants.toDegrees(
                                     Math.atan(
-                                    ( Math.tan(Constants.toRadians(Constants.toOSMDegrees(node.getLatitude())))
-                                            * ( Math.sin(Constants.toRadians(lngP - Constants.toOSMDegrees(node1.getLongitude())))
+                                    ( Math.tan(Constants.toRadians(node.getLatitude()))
+                                            * ( Math.sin(Constants.toRadians(lngP - node1.getLongitude()))
                                                 /
-                                                Math.sin(Constants.toRadians(Constants.toOSMDegrees(node.getLongitude()) - Constants.toOSMDegrees(node1.getLongitude())))
+                                                Math.sin(Constants.toRadians(node.getLongitude() - node1.getLongitude()))
                                                )
                                     )
                                     -
-                                    ( Math.tan(Constants.toRadians(Constants.toOSMDegrees(node1.getLatitude())))
-                                            * ( Math.sin(Constants.toRadians(lngP - Constants.toOSMDegrees(node.getLongitude())))
+                                    ( Math.tan(Constants.toRadians(node1.getLatitude()))
+                                            * ( Math.sin(Constants.toRadians(lngP - node.getLongitude()))
                                                 /
-                                                Math.sin(Constants.toRadians(Constants.toOSMDegrees(node.getLongitude()) - Constants.toOSMDegrees(node1.getLongitude())))
+                                                Math.sin(Constants.toRadians(node.getLongitude() - node1.getLongitude()))
                                                )
                                     )
                                 )
                             );
                             if(lat > latP) {
-//                                System.out.println("Point intersects the edge");
+                                //System.out.println("Point intersects the edge");
                                 count++;
                             }
                             else if(lat == latP) {
-//                                System.out.println("Point is on the edge");
+                                //System.out.println("Point is on the edge");
                                 location = 2;
                                 return location;
                             }
@@ -106,15 +104,15 @@ public class PointInPolygon {
             }
             if(count%2 == 1) {
                 location = 1;
-//                System.out.println("Point is on the land");
+                //System.out.println("Point is on the land");
                 return location;
             }
             location = 0;
-//            System.out.println("Point is in the water");
+            //System.out.println("Point is in the water");
             return location;
         }
         else {
-//            System.out.println("Point is in the water");
+            //System.out.println("Point is in the water");
             return location;
         }
     }

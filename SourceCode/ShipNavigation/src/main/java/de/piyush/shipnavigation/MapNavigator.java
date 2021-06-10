@@ -44,8 +44,8 @@ public class MapNavigator {
 
 	private static Node setupSource(double lat, double lng) {
 
-		double d_phi = Constants.toOSMDegrees(180.0) / 200; //change in lat
-        double d_lambda = Constants.toOSMDegrees(360.0) / 500; //change in lng
+		double d_phi = 180.0 / 200; //change in lat
+        double d_lambda = 360.0 / 500; //change in lng
         
 		int mSource = (int) Math.round(Math.abs(lat-90.0) / d_phi); //getting closest lat in grid
         int nSource = (int) Math.round(Math.abs(lng-180.0) / d_lambda);//getting closest lng in grid
@@ -61,8 +61,8 @@ public class MapNavigator {
 	
 	private static Node setupDestination(double lat, double lng) {
 
-		double d_phi = Constants.toOSMDegrees(180.0) / 200; //change in lat
-        double d_lambda = Constants.toOSMDegrees(360.0) / 500; //change in lng
+		double d_phi = 180.0 / 200; //change in lat
+        double d_lambda = 360.0 / 500; //change in lng
         
         int mDest = (int) Math.round(Math.abs(lat-90.0) / d_phi); //getting closest lat in grid
         int nDest = (int) Math.round(Math.abs(lng-180.0) / d_lambda);//getting closest lng in grid

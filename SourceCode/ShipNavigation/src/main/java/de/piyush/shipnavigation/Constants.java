@@ -15,7 +15,4 @@ public class Constants {
         return radian * RADIAN_TO_DEGREE;
     }
 
-    public static double toOSMDegrees(double degree) {
-        return Math.round(degree * POWER_CORRECTION) / POWER_CORRECTION;
-    }
 }

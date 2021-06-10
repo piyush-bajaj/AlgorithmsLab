@@ -53,10 +53,13 @@ public class Navigation {
 				edge = new Edge(Integer.parseInt(line[0]), n1, n2, Integer.parseInt(line[7]));
 				edges.add(edge);
 			}
+			
+			s.close();
 
 			Graph g = new Graph(nodes, edges);
 
 			dijkstraPriority = new DijkstraPriority(g);
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -105,8 +108,8 @@ public class Navigation {
 
 	private static Node setupSource(double lat, double lng) {
 
-		double d_phi = Constants.toOSMDegrees(180.0) / 200; // change in lat
-		double d_lambda = Constants.toOSMDegrees(360.0) / 500; // change in lng
+		double d_phi = new BigDecimal(180.0 / 200).setScale(7, RoundingMode.HALF_UP).doubleValue(); // change in lat
+		double d_lambda = new BigDecimal(360.0 / 500).setScale(7, RoundingMode.HALF_UP).doubleValue(); // change in lng
 
 		int mSource = (int) Math.round(Math.abs(lat - 90.0) / d_phi); // getting closest lat in grid
 		int nSource = (int) Math.round(Math.abs(lng - 180.0) / d_lambda);// getting closest lng in grid
@@ -131,8 +134,8 @@ public class Navigation {
 
 	private static Node setupDestination(double lat, double lng) {
 
-		double d_phi = Constants.toOSMDegrees(180.0) / 200; // change in lat
-		double d_lambda = Constants.toOSMDegrees(360.0) / 500; // change in lng
+		double d_phi = new BigDecimal(180.0 / 200).setScale(7, RoundingMode.HALF_UP).doubleValue(); // change in lat
+		double d_lambda = new BigDecimal(360.0 / 500).setScale(7, RoundingMode.HALF_UP).doubleValue(); // change in lng
 
 		int mDest = (int) Math.round(Math.abs(lat - 90.0) / d_phi); // getting closest lat in grid
 		int nDest = (int) Math.round(Math.abs(lng - 180.0) / d_lambda);// getting closest lng in grid

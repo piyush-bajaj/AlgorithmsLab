@@ -48,7 +48,6 @@ public class CoastlinesHelper {
                 //if the line itself is selected of the line is already used, a merged coastline is complete, add to the coastlines array
                 if(start_nodes.get(last_node_id) == i || used_lines[start_nodes.get(last_node_id)]) {
                     createBoundingBox(coastline, data);
-//                    createGreatCircleBoundingBox(coastline, data);
                     coastlines.add(coastline);
                     break;
                 }
@@ -68,13 +67,13 @@ public class CoastlinesHelper {
 
     private void createBoundingBox(Coastline coastline, OSMDataSet data) {
         try {
-            double minLat = Constants.toOSMDegrees(100.0), maxLat = Constants.toOSMDegrees(-100.0);
-            double minLng = Constants.toOSMDegrees(200.0), maxLng = Constants.toOSMDegrees(-200.0);
+            double minLat = 100.0, maxLat = -100.0;
+            double minLng = 200.0, maxLng = -200.0;
             for (int i = 0; i < coastline.getNumberOfNodes(); i++) {
                 long nodeId = coastline.getNodeId(i);
                 OsmNode node = data.getNode(nodeId);
-                double lat = Constants.toOSMDegrees(node.getLatitude());
-                double lng = Constants.toOSMDegrees(node.getLongitude());
+                double lat = node.getLatitude();
+                double lng = node.getLongitude();
                 if (lat < minLat) {
                     minLat = lat;
                 }
@@ -98,8 +97,8 @@ public class CoastlinesHelper {
 
     private void createGreatCircleBoundingBox(Coastline coastline, OSMDataSet data) {
         try {
-            double minLat = Constants.toOSMDegrees(100.0), maxLat = Constants.toOSMDegrees(-100.0);
-            double minLng = Constants.toOSMDegrees(200.0), maxLng = Constants.toOSMDegrees(-200.0);
+            double minLat = 100.0, maxLat = -100.0;
+            double minLng = 200.0, maxLng = -200.0;
             int numNodes = coastline.getNumberOfNodes();
             int location = checkPolygon(coastline, data);
 
@@ -107,94 +106,94 @@ public class CoastlinesHelper {
                 long nodeId = coastline.getNodeId(i);
                 OsmNode node1 = data.getNode(nodeId);
 
-                if (Constants.toOSMDegrees(node1.getLongitude()) < minLng) {
-                    minLng = Constants.toOSMDegrees(node1.getLongitude());
+                if (node1.getLongitude() < minLng) {
+                    minLng = node1.getLongitude();
                 }
-                if (Constants.toOSMDegrees(node1.getLongitude()) > maxLng) {
-                    maxLng = Constants.toOSMDegrees(node1.getLongitude());
+                if (node1.getLongitude() > maxLng) {
+                    maxLng = node1.getLongitude();
                 }
 
                 if (location == 1) {
-                    if (Constants.toOSMDegrees(node1.getLatitude()) < minLat) {
-                        minLat = Constants.toOSMDegrees(node1.getLatitude());
+                    if (node1.getLatitude() < minLat) {
+                        minLat = node1.getLatitude();
                     }
                     nodeId = coastline.getNodeId((i + 1) % numNodes);
                     OsmNode node2 = data.getNode(nodeId);
 
                     double theta;
-                    if (Constants.toOSMDegrees(node1.getLongitude()) != Constants.toOSMDegrees(node2.getLongitude())) {
+                    if (node1.getLongitude() != node2.getLongitude()) {
                         theta = Math.atan2(
                                 (
-                                        Math.sin(Constants.toRadians(Constants.toOSMDegrees(node2.getLongitude()) - Constants.toOSMDegrees(node1.getLongitude())))
+                                        Math.sin(Constants.toRadians(node2.getLongitude() - node1.getLongitude()))
                                                 *
-                                                Math.cos(Constants.toRadians(Constants.toOSMDegrees(node2.getLatitude())))
+                                                Math.cos(Constants.toRadians(node2.getLatitude()))
                                 )
                                 ,
                                 (
-                                        Math.cos(Constants.toRadians(Constants.toOSMDegrees(node1.getLatitude()))) * Math.cos(Constants.toRadians(Constants.toOSMDegrees(node2.getLatitude())))
+                                        Math.cos(Constants.toRadians(node1.getLatitude())) * Math.cos(Constants.toRadians(node2.getLatitude()))
                                                 -
-                                                Math.sin(Constants.toRadians(Constants.toOSMDegrees(node1.getLatitude()))) * Math.cos(Constants.toRadians(Constants.toOSMDegrees(node2.getLatitude()))) * Math.cos(Constants.toRadians(Constants.toOSMDegrees(node2.getLongitude()) - Constants.toOSMDegrees(node1.getLongitude())))
+                                                Math.sin(Constants.toRadians(node1.getLatitude())) * Math.cos(Constants.toRadians(node2.getLatitude())) * Math.cos(Constants.toRadians(node2.getLongitude() - node1.getLongitude()))
                                 )
                         );
-                        double lat = Math.max(Constants.toDegrees(Math.acos(Math.abs(Math.sin(theta) * Math.cos(Constants.toRadians(Constants.toOSMDegrees(node1.getLatitude())))))) , Math.max(Constants.toOSMDegrees(node1.getLatitude()), Constants.toOSMDegrees(node2.getLatitude())));
+                        double lat = Math.max(Constants.toDegrees(Math.acos(Math.abs(Math.sin(theta) * Math.cos(Constants.toRadians(node1.getLatitude()))))) , Math.max(node1.getLatitude(), node2.getLatitude()));
                         if (lat > maxLat) {
                             maxLat = lat;
                         }
-                    } else if (Constants.toOSMDegrees(node1.getLongitude()) == Constants.toOSMDegrees(node2.getLongitude()) && Constants.toOSMDegrees(node1.getLatitude()) < Constants.toOSMDegrees(node2.getLatitude())) {
+                    } else if (node1.getLongitude() == node2.getLongitude() && node1.getLatitude() < node2.getLatitude()) {
                         theta = 0;
-                        double lat = Math.max(Constants.toDegrees(Math.acos(Math.abs(Math.sin(theta) * Math.cos(Constants.toRadians(Constants.toOSMDegrees(node1.getLatitude())))))) , Math.max(Constants.toOSMDegrees(node1.getLatitude()), Constants.toOSMDegrees(node2.getLatitude())));
+                        double lat = Math.max(Constants.toDegrees(Math.acos(Math.abs(Math.sin(theta) * Math.cos(Constants.toRadians(node1.getLatitude()))))) , Math.max(node1.getLatitude(), node2.getLatitude()));
                         if (lat > maxLat) {
                             maxLat = lat;
                         }
-                    } else if (Constants.toOSMDegrees(node1.getLongitude()) == Constants.toOSMDegrees(node2.getLongitude()) && Constants.toOSMDegrees(node1.getLatitude()) > Constants.toOSMDegrees(node2.getLatitude())) {
+                    } else if (node1.getLongitude() == node2.getLongitude() && node1.getLatitude() > node2.getLatitude()) {
                         theta = Math.PI;
-                        double lat = Math.max(Constants.toDegrees(Math.acos(Math.abs(Math.sin(theta) * Math.cos(Constants.toRadians(Constants.toOSMDegrees(node1.getLatitude())))))) , Math.max(Constants.toOSMDegrees(node1.getLatitude()), Constants.toOSMDegrees(node2.getLatitude())));
+                        double lat = Math.max(Constants.toDegrees(Math.acos(Math.abs(Math.sin(theta) * Math.cos(Constants.toRadians(node1.getLatitude()))))) , Math.max(node1.getLatitude(), node2.getLatitude()));
                         if (lat > maxLat) {
                             maxLat = lat;
                         }
-                    } else if (Constants.toOSMDegrees(node1.getLongitude()) == Constants.toOSMDegrees(node2.getLongitude()) && Constants.toOSMDegrees(node1.getLatitude()) == Constants.toOSMDegrees(node2.getLatitude())) {
+                    } else if (node1.getLongitude() == node2.getLongitude() && node1.getLatitude() == node2.getLatitude()) {
                         continue;
                     }
 
                 } else if (location == 2) {
-                    if (Constants.toOSMDegrees(node1.getLatitude()) > maxLat) {
-                        maxLat = Constants.toOSMDegrees(node1.getLatitude());
+                    if (node1.getLatitude() > maxLat) {
+                        maxLat = node1.getLatitude();
                     }
                     nodeId = coastline.getNodeId((i + 1) % numNodes);
                     OsmNode node2 = data.getNode(nodeId);
 
                     double theta;
-                    if (Constants.toOSMDegrees(node1.getLongitude()) != Constants.toOSMDegrees(node2.getLongitude())) {
+                    if (node1.getLongitude() != node2.getLongitude()) {
                         theta = Math.atan2(
                                 (
-                                        Math.sin(Constants.toRadians(Constants.toOSMDegrees(node2.getLongitude()) - Constants.toOSMDegrees(node1.getLongitude())))
+                                        Math.sin(Constants.toRadians(node2.getLongitude() - node1.getLongitude()))
                                                 *
-                                                Math.cos(Constants.toRadians(Constants.toOSMDegrees(node2.getLatitude())))
+                                                Math.cos(Constants.toRadians(node2.getLatitude()))
                                 )
                                 ,
                                 (
-                                        Math.cos(Constants.toRadians(Constants.toOSMDegrees(node1.getLatitude()))) * Math.cos(Constants.toRadians(Constants.toOSMDegrees(node2.getLatitude())))
+                                        Math.cos(Constants.toRadians(node1.getLatitude())) * Math.cos(Constants.toRadians(node2.getLatitude()))
                                                 -
-                                                Math.sin(Constants.toRadians(Constants.toOSMDegrees(node1.getLatitude()))) * Math.cos(Constants.toRadians(Constants.toOSMDegrees(node2.getLatitude()))) * Math.cos(Constants.toRadians(Constants.toOSMDegrees(node2.getLongitude()) - Constants.toOSMDegrees(node1.getLongitude())))
+                                                Math.sin(Constants.toRadians(node1.getLatitude())) * Math.cos(Constants.toRadians(node2.getLatitude())) * Math.cos(Constants.toRadians(node2.getLongitude() - node1.getLongitude()))
                                 )
                         );
-                        double lat = Math.min(Constants.toDegrees(Math.acos(Math.abs(Math.sin(theta) * Math.cos(Constants.toRadians(Constants.toOSMDegrees(node1.getLatitude())))))) , Math.min(Constants.toOSMDegrees(node1.getLatitude()), Constants.toOSMDegrees(node2.getLatitude())));
+                        double lat = Math.min(Constants.toDegrees(Math.acos(Math.abs(Math.sin(theta) * Math.cos(Constants.toRadians(node1.getLatitude()))))) , Math.min(node1.getLatitude(), node2.getLatitude()));
                         if (lat > minLat) {
                             minLat = lat;
                         }
-                    } else if (Constants.toOSMDegrees(node1.getLongitude()) == Constants.toOSMDegrees(node2.getLongitude()) && Constants.toOSMDegrees(node1.getLatitude()) < Constants.toOSMDegrees(node2.getLatitude())) {
+                    } else if (node1.getLongitude() == node2.getLongitude() && node1.getLatitude() < node2.getLatitude()) {
                         theta = 0;
-                        double lat = Math.min(Constants.toDegrees(Math.acos(Math.abs(Math.sin(theta) * Math.cos(Constants.toRadians(Constants.toOSMDegrees(node1.getLatitude())))))) , Math.min(Constants.toOSMDegrees(node1.getLatitude()), Constants.toOSMDegrees(node2.getLatitude())));
+                        double lat = Math.min(Constants.toDegrees(Math.acos(Math.abs(Math.sin(theta) * Math.cos(Constants.toRadians(node1.getLatitude()))))) , Math.min(node1.getLatitude(), node2.getLatitude()));
                         if (lat < minLat) {
                             minLat = lat;
                         }
-                    } else if (Constants.toOSMDegrees(node1.getLongitude()) == Constants.toOSMDegrees(node2.getLongitude()) && Constants.toOSMDegrees(node1.getLatitude()) > Constants.toOSMDegrees(node2.getLatitude())) {
+                    } else if (node1.getLongitude() == node2.getLongitude() && node1.getLatitude() > node2.getLatitude()) {
                         theta = Math.PI;
-                        double lat = Math.min(Constants.toDegrees(Math.acos(Math.abs(Math.sin(theta) * Math.cos(Constants.toRadians(Constants.toOSMDegrees(node1.getLatitude())))))) , Math.min(Constants.toOSMDegrees(node1.getLatitude()), Constants.toOSMDegrees(node2.getLatitude())));
+                        double lat = Math.min(Constants.toDegrees(Math.acos(Math.abs(Math.sin(theta) * Math.cos(Constants.toRadians(node1.getLatitude()))))) , Math.min(node1.getLatitude(), node2.getLatitude()));
                         if (lat < minLat) {
                             minLat = lat;
                         }
-                    } else if (Constants.toOSMDegrees(node1.getLongitude()) == Constants.toOSMDegrees(node2.getLongitude()) && Constants.toOSMDegrees(node1.getLatitude()) == Constants.toOSMDegrees(node2.getLatitude())) {
+                    } else if (node1.getLongitude() == node2.getLongitude() && node1.getLatitude() == node2.getLatitude()) {
                         continue;
                     }
 
@@ -203,54 +202,54 @@ public class CoastlinesHelper {
                     OsmNode node2 = data.getNode(nodeId);
 
                     double theta = Double.MAX_VALUE;
-                    if (Constants.toOSMDegrees(node1.getLongitude()) != Constants.toOSMDegrees(node2.getLongitude())) {
+                    if (node1.getLongitude() != node2.getLongitude()) {
                         theta = Math.atan2(
                                 (
-                                        Math.sin(Constants.toRadians(Constants.toOSMDegrees(node2.getLongitude()) - Constants.toOSMDegrees(node1.getLongitude())))
+                                        Math.sin(Constants.toRadians(node2.getLongitude() - node1.getLongitude()))
                                                 *
-                                                Math.cos(Constants.toRadians(Constants.toOSMDegrees(node2.getLatitude())))
+                                                Math.cos(Constants.toRadians(node2.getLatitude()))
                                 )
                                 ,
                                 (
-                                        Math.cos(Constants.toRadians(Constants.toOSMDegrees(node1.getLatitude()))) * Math.cos(Constants.toRadians(Constants.toOSMDegrees(node2.getLatitude())))
+                                        Math.cos(Constants.toRadians(node1.getLatitude())) * Math.cos(Constants.toRadians(node2.getLatitude()))
                                                 -
-                                                Math.sin(Constants.toRadians(Constants.toOSMDegrees(node1.getLatitude()))) * Math.cos(Constants.toRadians(Constants.toOSMDegrees(node2.getLatitude()))) * Math.cos(Constants.toRadians(Constants.toOSMDegrees(node2.getLongitude()) - Constants.toOSMDegrees(node1.getLongitude())))
+                                                Math.sin(Constants.toRadians(node1.getLatitude())) * Math.cos(Constants.toRadians(node2.getLatitude())) * Math.cos(Constants.toRadians(node2.getLongitude() - node1.getLongitude()))
                                 )
                         );
 
-                    } else if (Constants.toOSMDegrees(node1.getLongitude()) == Constants.toOSMDegrees(node2.getLongitude()) && Constants.toOSMDegrees(node1.getLatitude()) < Constants.toOSMDegrees(node2.getLatitude())) {
+                    } else if (node1.getLongitude() == node2.getLongitude() && node1.getLatitude() < node2.getLatitude()) {
                         theta = 0;
 
-                    } else if (Constants.toOSMDegrees(node1.getLongitude()) == Constants.toOSMDegrees(node2.getLongitude()) && Constants.toOSMDegrees(node1.getLatitude()) > Constants.toOSMDegrees(node2.getLatitude())) {
+                    } else if (node1.getLongitude() == node2.getLongitude() && node1.getLatitude() > node2.getLatitude()) {
                         theta = Math.PI;
 
-                    } else if (Constants.toOSMDegrees(node1.getLongitude()) == Constants.toOSMDegrees(node2.getLongitude()) && Constants.toOSMDegrees(node1.getLatitude()) == Constants.toOSMDegrees(node2.getLatitude())) {
+                    } else if (node1.getLongitude() == node2.getLongitude() && node1.getLatitude() == node2.getLatitude()) {
                         continue;
                     }
-                    if(Constants.toOSMDegrees(node1.getLatitude()) > 0 && Constants.toOSMDegrees(node2.getLatitude()) > 0) {
-                        if(Constants.toOSMDegrees(node1.getLatitude()) < minLat) {
-                            minLat = Constants.toOSMDegrees(node1.getLatitude());
+                    if(node1.getLatitude() > 0 && node2.getLatitude() > 0) {
+                        if(node1.getLatitude() < minLat) {
+                            minLat = node1.getLatitude();
                         }
-                        double lat = Math.max(Constants.toDegrees(Math.acos(Math.abs(Math.sin(theta) * Math.cos(Constants.toRadians(Constants.toOSMDegrees(node1.getLatitude())))))) , Math.max(Constants.toOSMDegrees(node1.getLatitude()), Constants.toOSMDegrees(node2.getLatitude())));
+                        double lat = Math.max(Constants.toDegrees(Math.acos(Math.abs(Math.sin(theta) * Math.cos(Constants.toRadians(node1.getLatitude()))))) , Math.max(node1.getLatitude(), node2.getLatitude()));
                         if(lat > maxLat) {
                             maxLat = lat;
                         }
                     }
-                    else if(Constants.toOSMDegrees(node1.getLatitude()) < 0 && Constants.toOSMDegrees(node2.getLatitude()) < 0) {
-                        if(Constants.toOSMDegrees(node1.getLatitude()) > maxLat) {
-                            maxLat = Constants.toOSMDegrees(node1.getLatitude());
+                    else if(node1.getLatitude() < 0 && node2.getLatitude() < 0) {
+                        if(node1.getLatitude() > maxLat) {
+                            maxLat = node1.getLatitude();
                         }
-                        double lat = Math.min(Constants.toDegrees(Math.acos(Math.abs(Math.sin(theta) * Math.cos(Constants.toRadians(Constants.toOSMDegrees(node1.getLatitude())))))) , Math.min(Constants.toOSMDegrees(node1.getLatitude()), Constants.toOSMDegrees(node2.getLatitude())));
+                        double lat = Math.min(Constants.toDegrees(Math.acos(Math.abs(Math.sin(theta) * Math.cos(Constants.toRadians(node1.getLatitude()))))) , Math.min(node1.getLatitude(), node2.getLatitude()));
                         if(lat < minLat) {
                             minLat = lat;
                         }
                     }
                     else {
-                        if(Constants.toOSMDegrees(node1.getLatitude()) < minLat) {
-                            minLat = Constants.toOSMDegrees(node1.getLatitude());
+                        if(node1.getLatitude() < minLat) {
+                            minLat = node1.getLatitude();
                         }
-                        if(Constants.toOSMDegrees(node1.getLatitude()) > maxLat) {
-                            maxLat = Constants.toOSMDegrees(node1.getLatitude());
+                        if(node1.getLatitude() > maxLat) {
+                            maxLat = node1.getLatitude();
                         }
                     }
                 }

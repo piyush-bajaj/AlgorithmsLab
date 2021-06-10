@@ -15,16 +15,16 @@ public class OSMEdge {
     }
 
     public boolean isNorthSouth() {
-        if(Constants.toOSMDegrees(from.getLongitude()) == Constants.toOSMDegrees(to.getLongitude())) {
+        if(from.getLongitude() == to.getLongitude()) {
             return true;
         }
         return false;
     }
 
     public boolean isLngBetween(double lngP) {
-        if(lngP > Constants.toOSMDegrees(from.getLongitude()) && lngP < Constants.toOSMDegrees(to.getLongitude()))
+        if(lngP > from.getLongitude() && lngP < to.getLongitude())
             return true;
-        if(lngP < Constants.toOSMDegrees(from.getLongitude()) && lngP > Constants.toOSMDegrees(to.getLongitude())) {
+        if(lngP < from.getLongitude() && lngP > to.getLongitude()) {
             return true;
         }
         return false;
@@ -37,8 +37,8 @@ public class OSMEdge {
     }
 
     public double minLat() {
-        if(Constants.toOSMDegrees(from.getLatitude()) < Constants.toOSMDegrees(to.getLatitude()))
-            return Constants.toOSMDegrees(from.getLatitude());
-        return Constants.toOSMDegrees(to.getLatitude());
+        if(from.getLatitude() < to.getLatitude())
+            return from.getLatitude();
+        return to.getLatitude();
     }
 }
